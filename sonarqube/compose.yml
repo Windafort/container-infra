@@ -1,6 +1,6 @@
 services:
   sonarqube:
-    image: sonarqube:${IMAGE_VERSION}
+    image: sonarqube:${SONARQUBE_IMAGE_VERSION}
     ports:
       - "9000:9000"
     environment:
@@ -23,7 +23,7 @@ services:
       timeout: 5s
       retries: 5
   postgres:
-    image: postgres:${IMAGE_VERSION}
+    image: postgres:${POSTGRES_IMAGE_VERSION}
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
