@@ -3,8 +3,8 @@ services:
     image: eclipse-mosquitto:${IMAGE_VERSION}
     container_name: mosquitto
     ports:
-      - "1883:1883"
-      - "9001:9001"
+      - "${TCP_PORT}:1883"
+      - "${WS_PORT}:9001"
     volumes:
       - data:/mosquitto/data
       - log:/mosquitto/log
