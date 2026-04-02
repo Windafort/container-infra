@@ -1,0 +1,13 @@
+services:
+  caddy:
+    image: caddy:latest
+    volumes:
+      # Mount your local Caddyfile to the container's config path
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      # Persist Caddy's data (for certificates and configuration)
+      - caddy_data:/data
+    network_mode: host
+    restart: always
+
+volumes:
+  caddy_data:
