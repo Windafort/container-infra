@@ -1,0 +1,40 @@
+services:
+  drone-server:
+    image: drone/drone:${IMAGE_VERSION}
+    container_name: drone-server
+    ports:
+      - 8080:80
+    volumes:
+      - drone-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    environment:
+      - DRONE_GITEA_SERVER=${DRONE_GITEA_SERVER}
+      - DRONE_GITEA_CLIENT_ID=${DRONE_GITEA_CLIENT_ID}
+      - DRONE_GITEA_CLIENT_SECRET=${DRONE_GITEA_CLIENT_SECRET}
+      - DRONE_RPC_SECRET=${DRONE_RPC_SECRET}
+      - DRONE_SERVER_HOST=${DRONE_SERVER_HOST}
+      - DRONE_SERVER_PROTO=${DRONE_SERVER_PROTO}
+      # - DRONE_GITHUB_CLIENT_ID=${DRONE_GITHUB_CLIENT_ID}
+      # - DRONE_GITHUB_CLIENT_SECRET=${DRONE_GITHUB_CLIENT_SECRET}
+      # - DRONE_GITLAB_SERVER=${DRONE_GITLAB_SERVER}
+      # - DRONE_GITLAB_CLIENT_ID=${DRONE_GITLAB_CLIENT_ID}
+      # - DRONE_GITLAB_CLIENT_SECRET=${DRONE_GITLAB_CLIENT_SECRET}
+
+  drone-runner:
+    image: drone/drone-runner-docker:${RUNNER_IMAGE_VERSION}
+    container_name: drone-runner
+    restart: always
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_RPC_PROTO=${DRONE_SERVER_PROTO}
+      - DRONE_RPC_HOST=drone-server
+      - DRONE_RPC_SECRET=${DRONE_RPC_SECRET}
+      - DRONE_RUNNER_CAPACITY=${DRONE_RUNNER_CAPACITY}
+      - DRONE_RUNNER_NAME=${DRONE_RUNNER_NAME}
+
+volumes:
+  drone-data:
