@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: gitea
+  name: gitea
+spec:
+  containers:
+    - name: server
+      image: gitea/gitea:latest
+      env:
+        - name: USER_UID
+          value: "1000"
+        - name: USER_GID
+          value: "1000"
+        - name: GITEA__database__DB_TYPE
+          value: postgres
+        - name: GITEA__database__HOST
+          value: localhost:5432
+        - name: GITEA__database__NAME
+          value: gitea
+        - name: GITEA__database__USER
+          value: gitea
+        - name: GITEA__database__PASSWD
+          value: gitea
+      volumeMounts:
+        - name: gitea-data
+          mountPath: /data
+        - name: timezone
+          mountPath: /etc/timezone
+          readOnly: true
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+      ports:
+        - containerPort: 3000
+          hostPort: 3000
+        - containerPort: 22
+          hostPort: 222
+    - name: db
+      image: postgres:15-alpine
+      env:
+        - name: POSTGRES_USER
+          value: gitea
+        - name: POSTGRES_PASSWORD
+          value: gitea
+        - name: POSTGRES_DB
+          value: gitea
+      volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+  volumes:
+    - name: gitea-data
+      persistentVolumeClaim:
+        claimName: gitea-data-pvc
+    - name: postgres-data
+      persistentVolumeClaim:
+        claimName: postgres-data-pvc
+    - name: timezone
+      hostPath:
+        path: /etc/timezone
+    - name: localtime
+      hostPath:
+        path: /etc/localtime
