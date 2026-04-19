@@ -1,0 +1,20 @@
+services:
+  llamacpp:
+    image: ${LLAMACPP_IMAGE:-ghcr.io/ggml-org/llama.cpp:server}:${LLAMACPP_IMAGE_VERSION:-latest}
+    container_name: llamacpp
+    ports:
+      - "${LLAMACPP_PORT:-8080}:8080"
+    volumes:
+      - ${LLAMACPP_MODEL_DIR:-./models}:/models
+    command: -m /models/${LLAMACPP_MODEL:-model.gguf} --port 8080 --host 0.0.0.0
+    env_file:
+      - .env
+    restart: always
+    # Uncomment and configure the below block for GPU support (e.g., Nvidia)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
