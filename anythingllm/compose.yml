@@ -5,10 +5,11 @@ services:
     ports:
       - "${PORT}:3001"
     volumes:
-      # Persist AnythingLLM data (documents, embeddings, sessions)
-      - data:/usr/app/.data
+      # Persist AnythingLLM data (documents, LanceDB/SQLite DB, model weights)
+      - data:/app/server/storage
     environment:
-      - HOST_PORT=3001
+      # Required by the collector; must match the storage volume mount path above.
+      - STORAGE_DIR=/app/server/storage
       - DISABLE_TELEMETRY=${DISABLE_TELEMETRY}
       - DISABLE_ANALYTICS=${DISABLE_ANALYTICS}
     env_file:

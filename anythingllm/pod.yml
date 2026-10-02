@@ -9,8 +9,9 @@ spec:
     - name: anythingllm
       image: docker.io/mintplexlabs/anythingllm:${IMAGE_VERSION}
       env:
-        - name: HOST_PORT
-          value: "3001"
+        # Required by the collector; must match the storage volume mount path below.
+        - name: STORAGE_DIR
+          value: /app/server/storage
         - name: DISABLE_TELEMETRY
           value: ${DISABLE_TELEMETRY}
         - name: DISABLE_ANALYTICS
@@ -20,7 +21,7 @@ spec:
           hostPort: ${PORT}
           protocol: TCP
       volumeMounts:
-        - mountPath: /usr/app/.data
+        - mountPath: /app/server/storage
           name: anythingllm-data
 
   volumes:
