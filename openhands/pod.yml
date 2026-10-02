@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: openhands
+  name: openhands-pod
+spec:
+  containers:
+    - name: openhands
+      image: ghcr.io/openhands/agent-canvas:${IMAGE_VERSION}
+      env:
+        - name: TZ
+          value: ${TZ}
+        - name: PROJECTS_PATH
+          value: /projects
+      ports:
+        - containerPort: 8000
+          hostPort: ${PORT}
+          protocol: TCP
+      volumeMounts:
+        - mountPath: /home/openhands/.openhands
+          name: openhands-data
+        - mountPath: /projects
+          name: projects
+        - mountPath: /etc/timezone
+          name: timezone
+          readOnly: true
+        - mountPath: /etc/localtime
+          name: localtime
+          readOnly: true
+
+  volumes:
+    - name: openhands-data
+      persistentVolumeClaim:
+        claimName: openhands-data-pvc
+    # Projects are mounted from the host; swap for a PVC if needed.
+    - name: projects
+      hostPath:
+        path: ./projects
+        type: DirectoryOrCreate
+    - name: timezone
+      hostPath:
+        path: /etc/timezone
+    - name: localtime
+      hostPath:
+        path: /etc/localtime
