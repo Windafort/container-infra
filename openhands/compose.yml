@@ -1,0 +1,27 @@
+services:
+  openhands:
+    image: ghcr.io/openhands/agent-canvas:${IMAGE_VERSION}
+    container_name: openhands
+    ports:
+      - "${PORT}:8000"
+    volumes:
+      # Persist Agent Canvas state, session keys and conversation history
+      - data:/home/openhands/.openhands
+      # Host directory containing the project folders the agent can access
+      - ${PROJECTS_PATH:-./projects}:/projects
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=${TZ}
+      - PROJECTS_PATH=/projects
+    env_file:
+      - .env
+    restart: always
+
+volumes:
+  data:
+    driver: local
+
+networks:
+  default:
+    name: openhands_network
