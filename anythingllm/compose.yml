@@ -1,0 +1,24 @@
+services:
+  anythingllm:
+    image: mintplexlabs/anythingllm:${IMAGE_VERSION}
+    container_name: anythingllm
+    ports:
+      - "${PORT}:3001"
+    volumes:
+      # Persist AnythingLLM data (documents, embeddings, sessions)
+      - data:/usr/app/.data
+    environment:
+      - HOST_PORT=3001
+      - DISABLE_TELEMETRY=${DISABLE_TELEMETRY}
+      - DISABLE_ANALYTICS=${DISABLE_ANALYTICS}
+    env_file:
+      - .env
+    restart: always
+
+volumes:
+  data:
+    driver: local
+
+networks:
+  default:
+    name: anythingllm_network
