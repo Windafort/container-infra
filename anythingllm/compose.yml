@@ -1,0 +1,25 @@
+services:
+  anythingllm:
+    image: mintplexlabs/anythingllm:${IMAGE_VERSION}
+    container_name: anythingllm
+    ports:
+      - "${PORT}:3001"
+    volumes:
+      # Persist AnythingLLM data (documents, LanceDB/SQLite DB, model weights)
+      - data:/app/server/storage
+    environment:
+      # Required by the collector; must match the storage volume mount path above.
+      - STORAGE_DIR=/app/server/storage
+      - DISABLE_TELEMETRY=${DISABLE_TELEMETRY}
+      - DISABLE_ANALYTICS=${DISABLE_ANALYTICS}
+    env_file:
+      - .env
+    restart: always
+
+volumes:
+  data:
+    driver: local
+
+networks:
+  default:
+    name: anythingllm_network

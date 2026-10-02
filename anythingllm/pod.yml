@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: anythingllm
+  name: anythingllm-pod
+spec:
+  containers:
+    - name: anythingllm
+      image: docker.io/mintplexlabs/anythingllm:${IMAGE_VERSION}
+      env:
+        # Required by the collector; must match the storage volume mount path below.
+        - name: STORAGE_DIR
+          value: /app/server/storage
+        - name: DISABLE_TELEMETRY
+          value: ${DISABLE_TELEMETRY}
+        - name: DISABLE_ANALYTICS
+          value: ${DISABLE_ANALYTICS}
+      ports:
+        - containerPort: 3001
+          hostPort: ${PORT}
+          protocol: TCP
+      volumeMounts:
+        - mountPath: /app/server/storage
+          name: anythingllm-data
+
+  volumes:
+    - name: anythingllm-data
+      persistentVolumeClaim:
+        claimName: anythingllm-data-pvc
