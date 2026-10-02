@@ -1,0 +1,24 @@
+services:
+  agent-zero:
+    image: agent0ai/agent-zero:${IMAGE_VERSION}
+    container_name: agent-zero
+    ports:
+      - "${PORT}:80"
+    volumes:
+      # Persist Agent Zero workspaces, projects, memory and settings
+      - data:/a0/usr
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=${TZ}
+    env_file:
+      - .env
+    restart: always
+
+volumes:
+  data:
+    driver: local
+
+networks:
+  default:
+    name: agent-zero_network
