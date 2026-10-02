@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: agentcanvas
+  name: agentcanvas
+spec:
+  containers:
+    - name: server
+      image: ghcr.io/openhands/agent-canvas:latest
+      env: []
+      volumeMounts: []
+      ports:
+        - containerPort: 8000
+          hostPort: 8000
+  volumes: []

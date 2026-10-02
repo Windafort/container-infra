@@ -1,0 +1,15 @@
+services:
+  server:
+    image: ghcr.io/openhands/agent-canvas:${IMAGE_VERSION}
+    container_name: agentcanvas
+    environment: []
+    restart: always
+    networks:
+      - agentcanvas
+    volumes: []
+    ports:
+      - "${PORT}:8000"
+
+networks:
+  agentcanvas:
+    external: false
